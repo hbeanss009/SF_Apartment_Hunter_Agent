@@ -1,0 +1,33 @@
+2. Apply the Three Pillars of Evaluation
+Pillar 1: Agent Success & Quality (The Result)
+Metric: Ranking Reciprocal Rank (MRR). If the user likes the 1st apartment recommended, the score is high.
+
+Metric: Criteria Fulfillment Rate. Percentage of recommended apartments that actually meet the user’s hard constraints.
+
+Pillar 2: Process & Trajectory (The Reasoning)
+Tool Selection Accuracy: Did the agent call the Scraper tool with the correct location parameters, or did it try to guess?
+
+Reasoning Logic: Review the agent's internal "thought" process. Did it discard a listing because it was over budget, or did it just miss it?
+
+Efficiency: Did the agent scrape 50 sites when 2 would have sufficed?
+
+Pillar 3: Trust & Safety (The Guardrails)
+Robustness: How does the agent handle a search in a city where no data is found? Does it apologize or give fake results?
+
+Fairness: Ensure the agent doesn't inadvertently filter based on protected characteristics or biased neighborhood descriptions.
+
+3. Implement Your "Quality Gate" Tests
+To operationalize this, use a tiered testing approach:
+
+Code-Based (Deterministic): Write a Python script to verify that the agent's output is a valid JSON list and that all "Price" fields are integers.
+
+LLM-as-a-Judge: Use a stronger model (like Gemini 1.5 Pro) to review the agent's final list. Ask the judge: "On a scale of 1-5, how well do these 5 apartments match this specific user profile?"
+
+Human Evaluation: You (the expert) should manually review a "Golden Dataset" of 20 diverse searches to verify that the rankings "feel" right and the data is accurate.
+
+4. Operationalize the Feedback Loop
+Create a Golden Dataset: Save 50 "perfect" search results (User Query + Scraped Data + Ideal Ranked List).
+
+CI/CD Integration: Every time you update the agent's prompt or tools, automatically run the LLM-as-a-Judge against your Golden Dataset.
+
+Monitor Production: Add a "Thumbs Up/Down" to your agent's UI. If a user gives a "Thumbs Down," automatically flag that trajectory for human review to see where the reasoning failed.
