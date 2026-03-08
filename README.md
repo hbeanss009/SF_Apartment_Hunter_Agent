@@ -13,3 +13,25 @@ This would done in 3 steps - discover, analyse and recommend listings to the use
 
 
 
+https://github.com/user-attachments/assets/895c4002-baa0-475b-bee2-7ecac82a98f0
+
+
+
+
+https://github.com/user-attachments/assets/8de3d5d7-f40a-4454-b824-805c668864f9
+
+https://github.com/user-attachments/assets/7eeac80b-47c8-45a3-b10a-7c05c327ae78
+
+
+
+
+
+
+https://github.com/user-attachments/assets/7c089956-1e2a-4d00-b7dd-f15dfccd4755
+
+
+
+
+
+
+
