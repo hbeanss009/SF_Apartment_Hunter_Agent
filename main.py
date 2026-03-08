@@ -1,3 +1,11 @@
+"""
+Apartment Hunter Agent — main entrypoint.
+
+User input (search description and refinement text) is parsed by an LLM (Google Gemini)
+into structured criteria. The LLM extracts: neighbourhoods, min_bedrooms, min_bathrooms,
+budget_range, must_have_amenities, nice_to_have_amenities. These are then used by
+discovery → analyse → recommend.
+"""
 import json
 import os
 import re
@@ -36,15 +44,34 @@ _PREFERENCE_KEYS = [
 ]
 
 
+def _try_parse_json_from_llm(s: str) -> Optional[dict]:
+    """Parse JSON from LLM output; strip markdown code blocks and extract first {...} if needed."""
+    s = (s or "").strip()
+    # Strip ```json ... ``` or ``` ... ```
+    m = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", s)
+    if m:
+        s = m.group(1).strip()
+    try:
+        return json.loads(s)
+    except json.JSONDecodeError:
+        m = re.search(r"\{[\s\S]*\}", s)
+        if not m:
+            return None
+        try:
+            return json.loads(m.group(0))
+        except json.JSONDecodeError:
+            return None
+
+
 def _parse_additional_criteria(additional_text: str) -> Optional[dict]:
     """
-    Extract only the criteria the user is updating in their additional message
+    Use the LLM to extract only the criteria the user is updating in their additional message
     (budget, bedrooms, bathrooms, neighbourhood, amenities).
     Returns a dict with only the keys that were explicitly mentioned; omit keys
     not mentioned so we don't overwrite with empty.
     """
-    api_key = os.getenv("GOOGLE_API_KEY")
-    if not api_key:
+    api_key = _get_google_api_key()
+    if not api_key or not api_key.strip():
         return None
 
     prompt = ChatPromptTemplate.from_messages(
@@ -54,7 +81,8 @@ def _parse_additional_criteria(additional_text: str) -> Optional[dict]:
                 """You extract apartment search criteria from a short "additional criteria" message.
 The user already had a previous search; they are now adding or changing only some criteria.
 
-Output ONLY valid JSON. Include ONLY the keys that the user explicitly mentioned or changed in this message.
+Output ONLY a single valid JSON object. No markdown, no code block, no explanation.
+Include ONLY the keys that the user explicitly mentioned or changed in this message.
 Omit any key they did not mention (so we do not overwrite their previous value with empty).
 Valid keys (include only if mentioned): neighbourhoods, min_bedrooms, min_bathrooms, budget_range, must_have_amenities, nice_to_have_amenities.
 - neighbourhoods: string (comma-separated neighbourhood names)
@@ -63,7 +91,6 @@ Valid keys (include only if mentioned): neighbourhoods, min_bedrooms, min_bathro
 - budget_range: string (e.g. "2000-4000")
 - must_have_amenities: string (comma-separated)
 - nice_to_have_amenities: string (comma-separated)
-Do NOT include any other keys or text outside the JSON.
 """,
             ),
             (
@@ -73,24 +100,19 @@ Do NOT include any other keys or text outside the JSON.
         ]
     )
 
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key)
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+        google_api_key=api_key.strip(),
+        temperature=0,
+    )
     chain = prompt | llm
-    raw = chain.invoke({"additional": additional_text})
+    try:
+        raw = chain.invoke({"additional": additional_text})
+    except Exception as e:
+        print(f"[LLM parse additional] API call failed: {e}")
+        return None
     text = raw.content if hasattr(raw, "content") else str(raw)
-
-    def _try_parse_json(s: str):
-        try:
-            return json.loads(s)
-        except json.JSONDecodeError:
-            m = re.search(r"\{.*\}", s, re.DOTALL)
-            if not m:
-                return None
-            try:
-                return json.loads(m.group(0))
-            except json.JSONDecodeError:
-                return None
-
-    data = _try_parse_json(text)
+    data = _try_parse_json_from_llm(text or "")
     if not isinstance(data, dict):
         return None
     # Normalize to string values and drop keys not in our schema
@@ -113,16 +135,23 @@ def _merge_preferences(previous: list[str], updates: dict) -> list[str]:
     return previous_copy
 
 
+def _get_google_api_key() -> Optional[str]:
+    """Return Gemini/Google API key from GOOGLE_API_KEY or GEMINI_API_KEY."""
+    return os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+
+
 def _parse_user_preferences(description: str) -> Optional[list[str]]:
     """
-    Use Gemini to extract structured apartment criteria from a single freeform description.
+    Use the LLM (Gemini) to parse the user's freeform description into structured
+    apartment search criteria. The LLM extracts neighbourhoods, bedrooms, bathrooms,
+    budget, and amenities so the rest of the pipeline can use them.
 
     Returns [neighbourhoods, min_bedrooms, min_bathrooms, budget_range,
              must_have_amenities, nice_to_have_amenities] or None on failure.
     """
-    api_key = os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        print("GOOGLE_API_KEY not set; falling back to step-by-step questions.")
+    api_key = _get_google_api_key()
+    if not api_key or not api_key.strip():
+        print("[LLM parse] No API key: set GOOGLE_API_KEY or GEMINI_API_KEY in .env")
         return None
 
     prompt = ChatPromptTemplate.from_messages(
@@ -131,46 +160,47 @@ def _parse_user_preferences(description: str) -> Optional[list[str]]:
                 "system",
                 """You extract structured apartment search criteria from a short description.
 
-Always output ONLY valid JSON with these exact keys:
-- neighbourhoods: string (comma-separated neighbourhood names)
+Output ONLY a single valid JSON object. No markdown, no code block, no explanation.
+Use these exact keys:
+- neighbourhoods: string (comma-separated neighbourhood/area names)
 - min_bedrooms: integer (minimum number of bedrooms)
 - min_bathrooms: integer (minimum number of bathrooms)
-- budget_range: string (e.g. "2000-4000")
-- must_have_amenities: string (comma-separated amenities that are must-have)
-- nice_to_have_amenities: string (comma-separated amenities that are nice-to-have)
+- budget_range: string (e.g. "2000-4000" for monthly rent)
+- must_have_amenities: string (comma-separated must-have amenities)
+- nice_to_have_amenities: string (comma-separated nice-to-have amenities)
 
-If any field is not specified, make a reasonable best-effort guess from context
-or leave it as an empty string. Do NOT include any other keys or text outside the JSON.
+If a field is not specified, infer from context or use empty string. Always include all six keys.
 """,
             ),
             (
                 "human",
-                "User description:\n{description}\n\nExtract the fields as JSON.",
+                "User description:\n{description}\n\nExtract the criteria as JSON.",
             ),
         ]
     )
 
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key)
-    chain = prompt | llm
-
-    raw = chain.invoke({"description": description})
-    text = raw.content if hasattr(raw, "content") else str(raw)
-
-    def _try_parse_json(s: str):
+    for model_name in ("gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"):
+        llm = ChatGoogleGenerativeAI(
+            model=model_name,
+            google_api_key=api_key.strip(),
+            temperature=0,
+        )
+        chain = prompt | llm
         try:
-            return json.loads(s)
-        except json.JSONDecodeError:
-            m = re.search(r"\{.*\}", s, re.DOTALL)
-            if not m:
-                return None
-            try:
-                return json.loads(m.group(0))
-            except json.JSONDecodeError:
-                return None
-
-    data = _try_parse_json(text)
-    if not isinstance(data, dict):
-        print("Could not parse preferences automatically; falling back to step-by-step questions.")
+            raw = chain.invoke({"description": description})
+        except Exception as e:
+            print(f"[LLM parse] API call failed with {model_name}: {e}")
+            continue
+        text = raw.content if hasattr(raw, "content") else str(raw)
+        if not (text and text.strip()):
+            print(f"[LLM parse] {model_name} returned empty response.")
+            continue
+        data = _try_parse_json_from_llm(text)
+        if isinstance(data, dict):
+            break
+        print(f"[LLM parse] {model_name} output was not valid JSON. Raw (first 500 chars): {repr((text or '')[:500])}")
+    else:
+        print("[LLM parse] All models failed or returned unparseable JSON.")
         return None
 
     neighbourhoods = str(data.get("neighbourhoods", "") or "")
@@ -199,8 +229,9 @@ def run_pipeline(description: str, skip_discovery: bool = False) -> Tuple[Option
     if user_preferences is None:
         return (
             None,
-            "Could not understand your criteria. Please include neighbourhoods, "
-            "min bedrooms/bathrooms, budget range, and amenities.",
+            "The LLM could not parse your criteria. In .env set GOOGLE_API_KEY or GEMINI_API_KEY (get one at "
+            "https://aistudio.google.com/apikey). Ensure your description includes neighbourhoods, "
+            "min bedrooms/bathrooms, budget range, and amenities. Check the server console for details.",
         )
 
     if not skip_discovery:

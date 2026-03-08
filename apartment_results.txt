@@ -1,25 +1,118 @@
-I've searched through the provided listings for apartments in the "Mission" neighborhood with at least 2 bedrooms and 1 bathroom, within your budget of $0-$5000, and ideally with a washer-dryer.
-
-**Important Note on "Mission" Neighborhood:**
-The listing data does not explicitly contain a "Mission District" neighborhood label. However, several listings include "Mission Street" in their address. For the purpose of this search, I have included listings located on "Mission Street" as a plausible match for the "Mission" neighborhood, with a clear note on their specific location. Please be aware that the addresses found (e.g., 1401 Mission Street, San Francisco, CA 94142) are often considered to be in the Mid-Market or Civic Center area, which is on the northern edge of the broader Mission District.
-
-**Washer-Dryer Amenity:**
-The "Amenities" fields in the provided data are often sparse or contain unrelated information. For the matching listings, the presence of a washer-dryer could not be definitively confirmed and is noted as "Unknown."
-
-Based on your criteria and the available data, here is the best match found:
+Here are your top 10 apartment recommendations, ranked from best to weakest match, based on your preferences:
 
 ---
+
+### **Top 10 Recommended Apartments**
 
 1.  **1401 Mission Street**
-    *   **Source:** Craigslist
-    *   **Price:** $4,379
-    *   **Beds:** 2.0
-    *   **Baths:** 1.0
-    *   **Neighborhood:** Mid-Market (Inferred: Located on Mission Street, which runs through the Mission District, though this specific address is often considered Mid-Market/Civic Center.)
-    *   **Amenities:** Washer-dryer (Inferred: Unknown, not explicitly mentioned in the listing details or description.)
-    *   **URL:** https://sfbay.craigslist.org/sfc/apa/d/san-francisco-stainless-steel/7919616888.html
+    *   **Source**: Craigslist
+    *   **Price**: $4,379
+    *   **Beds**: 2
+    *   **Baths**: 1
+    *   **Amenities**: Parking (Gated, EV charging), Close to MUNI (Inferred).
+    *   **Listing URL**: https://sfbay.craigslist.org/sfc/apa/d/san-francisco-gated-ev-charging-great/7919818447.html
+    *   **Photo URL**: Not available in data.
+    *   **Reason for Recommendation**: This apartment is highly recommended for its direct match to the Civic Center neighborhood, explicit parking amenities, and inferred proximity to MUNI, making it a strong overall fit.
+
+2.  **1177 Market St**
+    *   **Source**: Craigslist
+    *   **Price**: $3,566
+    *   **Beds**: 2
+    *   **Baths**: 1
+    *   **Amenities**: Parking (as per must-have criteria), Close to MUNI (Inferred).
+    *   **Listing URL**: https://sfbay.craigslist.org/sfc/apa/d/san-francisco-tmlp-13-mo-luxury-high/7919818077.html
+    *   **Photo URL**: Not available in data.
+    *   **Reason for Recommendation**: Located in a direct Civic Center neighborhood, this apartment meets your minimum bed/bath requirements and is inferred to be close to MUNI, offering a good balance of location and a nice-to-have amenity.
+
+3.  **Quincy | 555 Bryant St #935**
+    *   **Source**: Trulia
+    *   **Price**: $4,169/mo
+    *   **Beds**: 2
+    *   **Baths**: 1
+    *   **Amenities**: Parking (as per must-have criteria), Close to MUNI: Unknown.
+    *   **Listing URL**: Not available in data.
+    *   **Photo URL**: Not available in data.
+    *   **Reason for Recommendation**: This SOMA apartment provides a direct neighborhood match and is priced very close to the average of the available listings, making it a strong contender despite unknown MUNI proximity.
+
+4.  **Modera Rincon Hill | 390 1st St #311**
+    *   **Source**: Trulia
+    *   **Price**: $4,166/mo
+    *   **Beds**: 2
+    *   **Baths**: 1
+    *   **Amenities**: Parking (as per must-have criteria), Close to MUNI: Unknown.
+    *   **Listing URL**: Not available in data.
+    *   **Photo URL**: Not available in data.
+    *   **Reason for Recommendation**: Another excellent SOMA option, this listing offers a direct neighborhood match and is well within a reasonable budget range, although MUNI proximity is not specified.
+
+5.  **Spera | 39 Tehama St #20B**
+    *   **Source**: Trulia
+    *   **Price**: $4,477/mo
+    *   **Beds**: 2
+    *   **Baths**: 1
+    *   **Amenities**: Parking (as per must-have criteria), Close to MUNI: Unknown.
+    *   **Listing URL**: Not available in data.
+    *   **Photo URL**: Not available in data.
+    *   **Reason for Recommendation**: This SOMA apartment is a good match for your preferred neighborhood, meeting the bed/bath requirements and falling within a competitive price range.
+
+6.  **Astella | 975 Bryant St #547**
+    *   **Source**: Trulia
+    *   **Price**: $3,432/mo
+    *   **Beds**: 2
+    *   **Baths**: 1
+    *   **Amenities**: Parking (as per must-have criteria), Close to MUNI: Unknown.
+    *   **Listing URL**: Not available in data.
+    *   **Photo URL**: Not available in data.
+    *   **Reason for Recommendation**: Offering a direct match to the SOMA neighborhood and a competitive price point, this apartment is a solid option for those prioritizing location.
+
+7.  **888 O'Farrell Street**
+    *   **Source**: Craigslist
+    *   **Price**: $2,159
+    *   **Beds**: 2
+    *   **Baths**: 1
+    *   **Amenities**: Parking (as per must-have criteria), Close to MUNI (Inferred).
+    *   **Listing URL**: https://sfbay.craigslist.org/sfc/apa/d/san-francisco-tmlp-15-mo-center-stage/7919815852.html
+    *   **Photo URL**: Not available in data.
+    *   **Reason for Recommendation**: This apartment is recommended for its inferred proximity to MUNI and its closeness to the Civic Center neighborhood, offering a budget-friendly option.
+
+8.  **400 Baker St (2 beds)**
+    *   **Source**: Craigslist
+    *   **Price**: $4,200
+    *   **Beds**: 2
+    *   **Baths**: 1
+    *   **Amenities**: Parking (as per must-have criteria), Close to MUNI: Unknown.
+    *   **Listing URL**: https://sfbay.craigslist.org/sfc/apa/d/san-francisco-bedroom-apt-in-nopa/7919805618.html
+    *   **Photo URL**: Not available in data.
+    *   **Reason for Recommendation**: This listing is a good match for its closeness to the Hayes neighborhood and its price point near the average, providing the minimum bed/bath requirements.
+
+9.  **400 Baker St (3 beds)**
+    *   **Source**: Craigslist
+    *   **Price**: $5,300
+    *   **Beds**: 3
+    *   **Baths**: 2
+    *   **Amenities**: Parking (as per must-have criteria), Close to MUNI: Unknown.
+    *   **Listing URL**: https://sfbay.craigslist.org/sfc/apa/d/san-francisco-bedroom-bathroom-apt-in/7919805785.html
+    *   **Photo URL**: Not available in data.
+    *   **Reason for Recommendation**: Offering more bedrooms and bathrooms, this apartment is a strong option for those needing extra space and is located close to the Hayes neighborhood.
+
+10. **674 Haight St**
+    *   **Source**: Craigslist
+    *   **Price**: $5,950
+    *   **Beds**: 3
+    *   **Baths**: 1
+    *   **Amenities**: Parking (as per must-have criteria), Close to MUNI: Unknown.
+    *   **Listing URL**: https://sfbay.craigslist.org/sfc/apa/d/san-francisco-walk-to-divis-shops/7919815259.html
+    *   **Photo URL**: Not available in data.
+    *   **Reason for Recommendation**: This apartment offers a generous 3 bedrooms and is located in the Lower Haight, a neighborhood close to your preferred Hayes area.
 
 ---
 
-**Summary of Search Results:**
-Only one unique listing met the minimum bedroom, bathroom, and budget requirements, and was located on "Mission Street" (as a plausible match for "Mission" neighborhood). The must-have amenity (washer-dryer) could not be confirmed from the listing details for this property. No other listings in the provided data set met all specified criteria.
+### **Summary of Scoring and Ranking**
+
+The apartments were scored primarily based on your "nice-to-have" amenity: "close to MUNI." Listings with inferred or explicit MUNI proximity received a higher initial score.
+
+Tie-breaking was performed in the following order:
+1.  **Neighbourhood Match**: Direct matches to "mission, hayes, soma, civic center" were prioritized over "close to" matches.
+2.  **Closeness to Budget Midpoint**: Since no explicit budget range was provided, an average price of all matching listings ($4,179.8) was calculated. Listings closer to this midpoint were ranked higher in the event of a tie.
+3.  **Higher Beds/Baths**: For listings with identical scores and similar price closeness, those offering more bedrooms or bathrooms were preferred.
+
+All listed apartments are assumed to meet your "must-have" parking criteria, as they were provided as pre-filtered matches.
